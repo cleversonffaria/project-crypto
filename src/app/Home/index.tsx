@@ -1,21 +1,24 @@
-import ViteLogo from "src/assets/react.svg?react";
-import { Book } from "src/components/Book";
-import { Chart } from "src/components/Chart";
-import { Table } from "src/components/Table";
+import { Book } from 'src/components/Book';
+import { Chart } from 'src/components/Chart';
+import { Table } from 'src/components/Table';
+import { Footer } from 'src/layout/Footer';
+import { Header } from 'src/layout/Header';
 
-function App() {
+export default function Home() {
   return (
-    <section className="flex flex-col gap-2 min-h-screen mx-5 my-5 max-w-[1500px] 2xl:mx-auto">
-      <ViteLogo />
+    <main className="min-h-screen">
+      <Header />
 
-      <Table.Root />
+      <section className="flex flex-col mb-5 gap-2  max-w-[1500px] 2xl:mx-auto mx-5">
+        <Table.Root />
 
-      <div className="flex flex-col-reverse sm:flex-row flex-1 gap-2">
-        <Chart.Component />
-        <Book.Root />
-      </div>
-    </section>
+        <div className="flex flex-col-reverse sm:flex-row flex-1 gap-2">
+          <Chart.Component />
+          <Book.Root />
+        </div>
+      </section>
+
+      <Footer />
+    </main>
   );
 }
-
-export default App;

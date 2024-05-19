@@ -1,14 +1,14 @@
-import ArrowsSort from "src/assets/icons/arrows-sort.svg?react";
-import IconBtc from "src/assets/icons/btc.png";
-import IconDoge from "src/assets/icons/doge.png";
-import IconEth from "src/assets/icons/eth.png";
-import IconSol from "src/assets/icons/sol.png";
+import ArrowsSort from 'src/assets/icons/arrows-sort.svg?react';
+import IconBtc from 'src/assets/icons/btc.png';
+import IconDoge from 'src/assets/icons/doge.png';
+import IconEth from 'src/assets/icons/eth.png';
+import IconSol from 'src/assets/icons/sol.png';
 
 export function TableRoot() {
   return (
-    <div className="overflow-x-auto shadow-md rounded-lg whitespace-nowrap bg-gray-50 dark:bg-zinc-900 border border-zinc-800">
-      <table className="w-full text-sm text-left rtl:text-right text-gray-900 dark:text-gray-200">
-        <thead className="text-xs text-gray-700 uppercase dark:text-gray-400 select-none">
+    <div className="overflow-x-auto whitespace-nowrap rounded-lg border border-zinc-800 bg-zinc-900 shadow-md">
+      <table className="w-full text-left text-sm text-gray-200 rtl:text-right">
+        <thead className="select-none text-xs uppercase text-gray-400">
           <tr>
             <th scope="col" className="px-6 py-3">
               <a href="#">
@@ -53,10 +53,10 @@ export function TableRoot() {
           </tr>
         </thead>
         <tbody>
-          <tr className="border-b dark:border-neutral-800 cursor-pointer hover:bg-zinc-800 last:border-none">
+          <tr className="cursor-pointer border-b border-neutral-800 last:border-none hover:bg-zinc-800">
             <th
               scope="row"
-              className="flex items-center gap-2 px-6 py-4 font-medium whitespace-nowrap"
+              className="flex items-center gap-2 whitespace-nowrap px-6 py-4 font-medium"
             >
               <img
                 src={IconBtc}
@@ -64,7 +64,7 @@ export function TableRoot() {
                 alt="Ícone do bitcoin"
               />
               <span>BTC</span>
-              <span className="text-gray-500 dark:text-gray-400">Bitcoin</span>
+              <span className="text-gray-400">Bitcoin</span>
             </th>
             <td className="px-6 py-4 text-right">$66,931.25</td>
             <td className="px-6 py-4 text-right">+0.40%</td>
@@ -75,10 +75,10 @@ export function TableRoot() {
               </a>
             </td>
           </tr>
-          <tr className="border-b dark:border-neutral-800 cursor-pointer hover:bg-zinc-800 last:border-none">
+          <tr className="cursor-pointer border-b border-neutral-800 last:border-none hover:bg-zinc-800">
             <th
               scope="row"
-              className="flex items-center gap-2 px-6 py-4 font-medium whitespace-nowrap"
+              className="flex items-center gap-2 whitespace-nowrap px-6 py-4 font-medium"
             >
               <img
                 src={IconEth}
@@ -86,7 +86,7 @@ export function TableRoot() {
                 alt="Ícone do bitcoin"
               />
               <span>ETH</span>
-              <span className="text-gray-500 dark:text-gray-400">Ethereum</span>
+              <span className="text-gray-400">Ethereum</span>
             </th>
             <td className="px-6 py-4 text-right">$66,931.25</td>
             <td className="px-6 py-4 text-right">+0.40%</td>
@@ -97,10 +97,10 @@ export function TableRoot() {
               </a>
             </td>
           </tr>
-          <tr className="border-b dark:border-neutral-800 cursor-pointer hover:bg-zinc-800 last:border-none">
+          <tr className="cursor-pointer border-b border-neutral-800 last:border-none hover:bg-zinc-800">
             <th
               scope="row"
-              className="flex items-center gap-2 px-6 py-4 font-medium whitespace-nowrap"
+              className="flex items-center gap-2 whitespace-nowrap px-6 py-4 font-medium"
             >
               <img
                 src={IconSol}
@@ -108,7 +108,7 @@ export function TableRoot() {
                 alt="Ícone do bitcoin"
               />
               <span>SOL</span>
-              <span className="text-gray-500 dark:text-gray-400">Solana</span>
+              <span className="text-gray-400">Solana</span>
             </th>
             <td className="px-6 py-4 text-right">$66,931.25</td>
             <td className="px-6 py-4 text-right">+0.40%</td>
@@ -119,10 +119,10 @@ export function TableRoot() {
               </a>
             </td>
           </tr>
-          <tr className="border-b dark:border-neutral-800 cursor-pointer hover:bg-zinc-800 last:border-none">
+          <tr className="cursor-pointer border-b border-neutral-800 last:border-none hover:bg-zinc-800">
             <th
               scope="row"
-              className="flex items-center gap-2 px-6 py-4 font-medium whitespace-nowrap"
+              className="flex items-center gap-2 whitespace-nowrap px-6 py-4 font-medium"
             >
               <img
                 src={IconDoge}
@@ -130,7 +130,7 @@ export function TableRoot() {
                 alt="Ícone do bitcoin"
               />
               <span>DOGE</span>
-              <span className="text-gray-500 dark:text-gray-400">Dogecoin</span>
+              <span className="text-gray-400">Dogecoin</span>
             </th>
             <td className="px-6 py-4 text-right">$66,931.25</td>
             <td className="px-6 py-4 text-right">+0.40%</td>
