@@ -1,5 +1,9 @@
-import { BookRoot } from "./book.root";
+import { BookOrders } from './book.orders';
+import { BookComponent } from './book.component';
+import { BookHeader } from './book.header';
 
 export const Book = {
-  Root: BookRoot,
+  Component: BookComponent,
+  Orders: BookOrders,
+  Header: BookHeader,
 };

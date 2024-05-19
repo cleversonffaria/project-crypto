@@ -6,15 +6,18 @@ import { Header } from 'src/layout/Header';
 
 export default function Home() {
   return (
-    <main className="min-h-screen">
+    <main className="min-h-screen flex flex-col justify-between">
       <Header />
 
-      <section className="flex flex-col mb-5 gap-2  max-w-[1500px] 2xl:mx-auto mx-5">
-        <Table.Root />
+      <section className="flex flex-1 flex-col mb-5 gap-2 w-full max-w-[1500px] 2xl:mx-auto px-4">
+        <Table.Root>
+          <Table.Header />
+          <Table.Content />
+        </Table.Root>
 
         <div className="flex flex-col-reverse sm:flex-row flex-1 gap-2">
           <Chart.Component />
-          <Book.Root />
+          <Book.Component />
         </div>
       </section>
 

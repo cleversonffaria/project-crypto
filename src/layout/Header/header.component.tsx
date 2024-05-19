@@ -7,7 +7,7 @@ export function Header() {
         <img src={Logo} alt="Logotipo do site" width={50} />
 
         <h1 className="bg-gradient-to-r from-indigo-300 to-teal-300 bg-clip-text text-lg font-bold text-transparent">
-          Project Crypto
+          Project Cripto
         </h1>
       </div>
     </div>
