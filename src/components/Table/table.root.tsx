@@ -6,7 +6,7 @@ import IconSol from "src/assets/icons/sol.png";
 
 export function TableRoot() {
   return (
-    <div className="mx-5 my-5 overflow-x-auto shadow-md rounded-lg whitespace-nowrap bg-gray-50 dark:bg-zinc-900 border border-zinc-800">
+    <div className="my-5 overflow-x-auto shadow-md rounded-lg whitespace-nowrap bg-gray-50 dark:bg-zinc-900 border border-zinc-800">
       <table className="w-full text-sm text-left rtl:text-right text-gray-900 dark:text-gray-200">
         <thead className="text-xs text-gray-700 uppercase dark:text-gray-400 select-none">
           <tr>

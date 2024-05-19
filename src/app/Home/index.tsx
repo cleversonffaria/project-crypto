@@ -5,16 +5,17 @@ import { Table } from "src/components/Table";
 
 function App() {
   return (
-    <>
+    <section className="flex flex-col min-h-screen mx-5 my-5">
       <ViteLogo />
 
       <Table.Root />
 
-      <div className="flex">
+      <div className="flex flex-1 gap-2">
         <Chart.Root />
+
         <Book.Root />
       </div>
-    </>
+    </section>
   );
 }
 
