@@ -2,13 +2,12 @@ export function BookRoot() {
   const book = Array.from({ length: 10 });
 
   function calculatePercentageBar({ total }: { total: number }) {
-    console.log(total);
     const percentage = Math.random() * 100;
     return `${percentage}%`;
   }
 
   return (
-    <div className="max-w-md min-w-sm flex-1 bg-zinc-900 rounded-lg text-sm shadow-md border border-zinc-800">
+    <div className="min-w-sm flex-1 bg-zinc-900 rounded-lg text-sm shadow-md border border-zinc-800">
       <div className="flex text-zinc-400 gap-3 px-4 pt-4">
         <span className="flex-1 overflow-hidden text-ellipsis text-left">
           Preço(USDT)

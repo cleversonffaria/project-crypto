@@ -1,5 +1,5 @@
-import { ChartRoot } from "./chart.root";
+import { ChartComponent } from "./chart.component";
 
 export const Chart = {
-  Root: ChartRoot,
+  Component: ChartComponent,
 };
