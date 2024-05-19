@@ -1,5 +1,5 @@
-import { Root } from "./book.root";
+import { BookRoot } from "./book.root";
 
 export const Book = {
-  Root,
+  Root: BookRoot,
 };

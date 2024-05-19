@@ -1,4 +1,4 @@
-export function Root() {
+export function BookRoot() {
   const book = Array.from({ length: 10 });
 
   function calculatePercentageBar({ total }: { total: number }) {
