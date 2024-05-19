@@ -8,7 +8,7 @@ export function BookRoot() {
   }
 
   return (
-    <div className="max-w-md min-w-sm mx-auto bg-zinc-900 rounded-lg text-sm">
+    <div className="max-w-lg min-w-sm flex-1 bg-zinc-900 rounded-lg text-sm shadow-md border border-zinc-800">
       <div className="flex text-zinc-400 gap-3 px-4 pt-4">
         <span className="flex-1 overflow-hidden text-ellipsis text-left">
           Preço(USDT)
