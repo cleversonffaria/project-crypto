@@ -1,6 +1,7 @@
-import { useEffect, useRef } from "react";
-import { createChart, CrosshairMode } from "lightweight-charts";
-import { priceData } from "./chart.utils";
+import { useEffect, useRef } from 'react';
+import { createChart, CrosshairMode } from 'lightweight-charts';
+
+import { priceData } from './chart.utils';
 
 export function ChartComponent() {
   const chartContainerRef = useRef<HTMLDivElement>(null);
@@ -10,17 +11,20 @@ export function ChartComponent() {
     if (!chartContainerRef.current) return;
 
     const colors = {
-      background: "#18181b",
-      text: "#ffffffe5",
-      neutral: "#27272a",
-      green: "#0CCB81",
-      red: "#F64670",
+      background: '#18181b',
+      text: '#ffffffe5',
+      neutral: '#27272a',
+      green: '#0CCB81',
+      red: '#F64670',
     };
 
     const chart = createChart(chartContainerRef.current, {
       layout: {
         background: { color: colors.background },
         textColor: colors.text,
+      },
+      rightPriceScale: {
+        borderColor: colors.neutral,
       },
       grid: {
         vertLines: { color: colors.neutral },
@@ -57,11 +61,11 @@ export function ChartComponent() {
     const resizeObserver = new ResizeObserver(handleResize);
     if (chartContainerRef.current) resizeObserver.observe(document.body);
 
-    window.addEventListener("resize", handleResize);
+    window.addEventListener('resize', handleResize);
 
     return () => {
       resizeObserver.disconnect();
-      window.removeEventListener("resize", handleResize);
+      window.removeEventListener('resize', handleResize);
     };
   }, []);
 
