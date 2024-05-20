@@ -1,7 +1,19 @@
 version: '3.8'
 
 services:
-  frontend:
+  frontend-build:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: build-stage
+    volumes:
+      - .:/app
+      - /app/node_modules
+    command: >
+      sh -c "npm install -g pnpm &&
+             pnpm install &&
+             pnpm run build"
+  frontend-publish:
     build:
       context: .
       dockerfile: Dockerfile
@@ -10,4 +22,4 @@ services:
       - "80:80"
     volumes:
       - ./dist:/usr/share/nginx/html
-    command: ["nginx", "-g", "daemon off;"]
+    command: [ "nginx", "-g", "daemon off;" ]
