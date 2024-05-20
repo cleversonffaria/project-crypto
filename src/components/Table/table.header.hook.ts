@@ -1,11 +1,14 @@
 import { useEffect, useState, useRef } from 'react';
 import { ListCrypto } from './table.types';
+
 import { useAppSelector } from 'src/hooks/useRedux';
 import { BASE_URL_SOCKET } from 'src/constants/url';
+import { formatPrice } from 'src/utils/helpers';
 
 export const useTableContent = () => {
   const [cryptoData, setCryptoData] = useState<{ [symbol: string]: ListCrypto }>({});
   const cryptoSort = useAppSelector((state) => state.crypto.sort);
+
   const wsRef = useRef<WebSocket | null>(null);
   const reconnectIntervalRef = useRef<number>(1000);
 
@@ -29,14 +32,6 @@ export const useTableContent = () => {
     price: sortCryptoDataByPrice,
     percentage: sortCryptoDataByPriceChangePercent,
     name: sortCryptoDataBySymbol,
-  };
-
-  const formatPrice = (price: number) => {
-    const fractionDigits = price.toString().split('.')[1]?.length;
-    const defaultFractionDigits = 2;
-    const minimumFractionDigits = fractionDigits > 1 ? fractionDigits : defaultFractionDigits;
-
-    return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits }).format(price);
   };
 
   const handleCrypto = (item: ListCrypto) => {

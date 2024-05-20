@@ -13,7 +13,14 @@ export const binanceApi = createApi({
         params: { symbol, interval, startTime, endTime },
       }),
     }),
+    getBook: builder.query<any, { symbol: string; limit: number }>({
+      query: ({ symbol, limit }) => ({
+        url: '/api/v3/depth',
+        method: 'GET',
+        params: { symbol, limit },
+      }),
+    }),
   }),
 });
 
-export const { useGetKlinesQuery } = binanceApi;
+export const { useGetKlinesQuery, useGetBookQuery } = binanceApi;

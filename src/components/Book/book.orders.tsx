@@ -1,40 +1,46 @@
-import { BookOrdersProps } from './book.types';
+import Decimal from 'decimal.js-light';
+import { OrderBookProps } from './book.types';
 import { COLOR_ORDER } from './book.utils';
 
-export const BookOrders = ({ color }: BookOrdersProps) => {
-  const listBook = [
-    { price: 0.0002955, amount: 126417, total: 37.356 },
-    { price: 0.0002954, amount: 126417, total: 37.356 },
-    { price: 0.0002953, amount: 126417, total: 37.356 },
-    { price: 0.0002952, amount: 126417, total: 37.356 },
-    { price: 0.0002951, amount: 126417, total: 37.356 },
-    { price: 0.000295, amount: 126417, total: 37.356 },
-    { price: 0.0002949, amount: 126417, total: 37.356 },
-    { price: 0.0002948, amount: 126417, total: 37.356 },
-    { price: 0.0002947, amount: 126417, total: 37.356 },
-    { price: 0.0002946, amount: 126417, total: 37.356 },
-  ];
-
-  function calculatePercentageBar({ total }: { total: number }) {
-    const percentage = Math.random() * 100;
-    return `${percentage}%`;
+export const BookOrders = ({ orders, type }: OrderBookProps) => {
+  {
+    orders.map((order, index) => (
+      <tr key={index} className={type === 'asks' ? 'text-red-500' : 'text-green-500'}>
+        <td className="px-4 py-2">{order.price}</td>
+        <td className="px-4 py-2">{order.quantity}</td>
+      </tr>
+    ));
   }
 
   return (
-    <div className="mt-2 flex flex-col">
-      {listBook.map((book, index) => {
-        const percentageBar = calculatePercentageBar({ total: index });
+    <div className={`mt-2 flex ${type.match('asks') ? 'flex-col-reverse' : 'flex-col'}`}>
+      {orders.map((book, index) => {
+        const amount = new Decimal(book.price).mul(book.quantity).toNumber();
+        const price = new Decimal(book.price)
+          .toDecimalPlaces(8)
+          .toDecimalPlaces(2, Decimal.ROUND_DOWN)
+          .toNumber()
+          .toFixed(2);
+        const quantity = new Decimal(book.quantity).toDecimalPlaces(5, Decimal.ROUND_DOWN).toFixed(5);
 
         return (
           <div key={index} className="flex flex-row relative flex-1 overflow-hidden cursor-pointer hover:bg-zinc-800">
             <div className="order-row flex gap-3 px-4 flex-1 z-10">
-              <span className={`text-${COLOR_ORDER[color]} text-left flex-1`}>{book.price}</span>
-              <span className="text-right flex-1">{book.total}</span>
-              <span className="text-right flex-1">{book.amount}</span>
+              <span className="text-left flex-1" style={{ color: COLOR_ORDER[type] }}>
+                {price}
+              </span>
+              <span className="text-right flex-1">{quantity}</span>
+              <span className="text-right flex-1">
+                {new Intl.NumberFormat('en-US', { style: 'decimal', currency: 'USD' }).format(amount)}
+              </span>
             </div>
+
             <div
-              className={`bg-${COLOR_ORDER[color]} opacity-20 right-0 absolute z-0 h-full`}
-              style={{ width: percentageBar }}
+              className={`opacity-20 right-0 absolute z-0 h-full`}
+              style={{
+                background: COLOR_ORDER[type],
+                width: `${book.percentage?.toNumber()}%`,
+              }}
             />
           </div>
         );
