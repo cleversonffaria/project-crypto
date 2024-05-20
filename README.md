@@ -2,6 +2,8 @@
 
 Este projeto é uma aplicação React + TypeScript + Vite focada em visualização de dados de criptomoedas.
 
+[Link para acesso](https://project-crypto-blue.vercel.app/)
+
 ## Tecnologias Utilizadas
 
 - **React**: Biblioteca JavaScript para construção de interfaces de usuário
