@@ -79,7 +79,7 @@ Você pode iniciar a aplicação usando Docker, tanto para desenvolvimento quant
 1. Execute o comando abaixo para iniciar o ambiente de produção usando Docker:
 
    ```sh
-   npm run docker:dev
+   npm run docker:prod
    ```
 
 #### Estrutura de Pastas
