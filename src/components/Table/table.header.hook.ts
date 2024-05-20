@@ -1,13 +1,13 @@
-import { useEffect, useState } from 'react';
-
+import { useEffect, useState, useRef } from 'react';
 import { ListCrypto } from './table.types';
-
 import { useAppSelector } from 'src/hooks/useRedux';
 import { BASE_URL_SOCKET } from 'src/constants/url';
 
 export const useTableContent = () => {
   const [cryptoData, setCryptoData] = useState<{ [symbol: string]: ListCrypto }>({});
   const cryptoSort = useAppSelector((state) => state.crypto.sort);
+  const wsRef = useRef<WebSocket | null>(null);
+  const reconnectIntervalRef = useRef<number>(1000);
 
   const sortCryptoDataByPriceChangePercent = Object.values(cryptoData).sort((a, b) => {
     const changeA = parseFloat(a.priceChangePercent.replace('%', ''));
@@ -43,7 +43,7 @@ export const useTableContent = () => {
     console.log(item);
   };
 
-  useEffect(() => {
+  const connectWebSocket = () => {
     const ws = new WebSocket(
       `${BASE_URL_SOCKET}/stream?streams=btcusdt@ticker/ethusdt@ticker/solusdt@ticker/dogeusdt@ticker`
     );
@@ -62,8 +62,26 @@ export const useTableContent = () => {
       }));
     };
 
-    return () => {
+    ws.onclose = () => {
+      reconnectIntervalRef.current = Math.min(reconnectIntervalRef.current * 2, 30000);
+      setTimeout(() => connectWebSocket(), reconnectIntervalRef.current);
+    };
+
+    ws.onerror = (error: Event) => {
+      console.error('WebSocket error:', error);
       ws.close();
+    };
+
+    wsRef.current = ws;
+  };
+
+  useEffect(() => {
+    connectWebSocket();
+
+    return () => {
+      if (wsRef.current) {
+        wsRef.current.close();
+      }
     };
   }, []);
 

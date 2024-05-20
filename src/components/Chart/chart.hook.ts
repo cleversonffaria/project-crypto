@@ -9,6 +9,8 @@ export const useChart = () => {
   const chartContainerRef = useRef<HTMLDivElement>(null);
   const chartRef = useRef<IChartApi | null>(null);
   const candleSeriesRef = useRef<ISeriesApi<'Candlestick'> | null>(null);
+  const wsRef = useRef<WebSocket | null>(null);
+  const reconnectIntervalRef = useRef<number>(1000);
 
   const { data: listDataKlines, isLoading } = useGetKlinesQuery({ symbol: 'BTCUSDT', interval: '1m' });
 
@@ -83,7 +85,7 @@ export const useChart = () => {
     };
   }, [handleChart, handleResize]);
 
-  useEffect(() => {
+  const connectWebSocket = () => {
     const ws = new WebSocket(`${BASE_URL_SOCKET}/ws/btcusdt@kline_1m`);
 
     ws.onmessage = (event: MessageEvent) => {
@@ -100,12 +102,26 @@ export const useChart = () => {
       if (candleSeriesRef.current) candleSeriesRef.current.update(klinesData);
     };
 
-    ws.onerror = (error: Event) => {
-      console.error('WebSocket error:', error);
+    ws.onclose = () => {
+      reconnectIntervalRef.current = Math.min(reconnectIntervalRef.current * 2, 30000);
+      setTimeout(() => connectWebSocket(), reconnectIntervalRef.current);
     };
 
-    return () => {
+    ws.onerror = (error: Event) => {
+      console.error('WebSocket error:', error);
       ws.close();
+    };
+
+    wsRef.current = ws;
+  };
+
+  useEffect(() => {
+    connectWebSocket();
+
+    return () => {
+      if (wsRef.current) {
+        wsRef.current.close();
+      }
     };
   }, []);
 
