@@ -26,19 +26,14 @@ export const BookOrders = ({ color }: BookOrdersProps) => {
         const percentageBar = calculatePercentageBar({ total: index });
 
         return (
-          <div
-            key={index}
-            className="flex flex-row relative flex-1 overflow-hidden cursor-pointer hover:bg-zinc-800"
-          >
+          <div key={index} className="flex flex-row relative flex-1 overflow-hidden cursor-pointer hover:bg-zinc-800">
             <div className="order-row flex gap-3 px-4 flex-1 z-10">
-              <span className={`text-[${COLOR_ORDER[color]}] text-left flex-1`}>
-                {book.price}
-              </span>
+              <span className={`text-${COLOR_ORDER[color]} text-left flex-1`}>{book.price}</span>
               <span className="text-right flex-1">{book.total}</span>
               <span className="text-right flex-1">{book.amount}</span>
             </div>
             <div
-              className={`bg-[${COLOR_ORDER[color]}] opacity-20 right-0 absolute z-0 h-full`}
+              className={`bg-${COLOR_ORDER[color]} opacity-20 right-0 absolute z-0 h-full`}
               style={{ width: percentageBar }}
             />
           </div>

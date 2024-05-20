@@ -1,4 +1,4 @@
 export const COLOR_ORDER = {
-  buy: '#0ECB81',
-  sell: '#F64670',
+  buy: 'green-400',
+  sell: 'red-400',
 };

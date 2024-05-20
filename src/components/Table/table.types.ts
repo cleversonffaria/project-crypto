@@ -1,10 +1,7 @@
-export interface ListCripto {
-  id: number;
-  img: string;
-  name: string;
+export interface ListCrypto {
   symbol: string;
   price: string;
-  percent: string;
-  marketCap: string;
-  volume: string;
+  priceChangePercent: string;
+  volume: number;
+  marketCap: number;
 }
