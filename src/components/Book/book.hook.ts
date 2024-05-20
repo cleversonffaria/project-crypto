@@ -3,20 +3,22 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { BASE_URL_SOCKET } from 'src/constants/url';
 import { useGetBookQuery } from 'src/service/api.binance';
+import { useAppSelector } from 'src/hooks/useRedux';
+
 import { Order, OrderBookState } from './book.types';
 
-const SYMBOL = 'btcusdt';
 const LEVELS = 20;
 
 export const useBook = () => {
-  const { data: initialBookData } = useGetBookQuery({ symbol: SYMBOL.toUpperCase(), limit: LEVELS });
+  const SYMBOL = useAppSelector((state) => state.crypto.symbol);
+
+  const { data: initialBookData, isLoading } = useGetBookQuery({ symbol: SYMBOL.toUpperCase(), limit: LEVELS });
 
   const [orderBook, setOrderBook] = useState<OrderBookState>({ bids: [], asks: [] });
   const [midPrice, setMidPrice] = useState(new Decimal(0));
   const [midPriceType, setMidPriceType] = useState<'bid' | 'ask' | 'none'>('none');
 
   const wsRef = useRef<WebSocket | null>(null);
-  const reconnectIntervalRef = useRef<number>(1000);
 
   const calculatePercentages = (orders: Order[]) => {
     const totalQuantity = orders.reduce((total, order) => new Decimal(total).add(order.quantity).toNumber(), 0);
@@ -69,7 +71,7 @@ export const useBook = () => {
   }, []);
 
   const connectWebSocket = useCallback(() => {
-    const ws = new WebSocket(`${BASE_URL_SOCKET}/ws/${SYMBOL}@depth`);
+    const ws = new WebSocket(`${BASE_URL_SOCKET}/ws/${SYMBOL.toLowerCase()}@depth`);
 
     ws.onmessage = (event) => {
       const { b, a } = JSON.parse(event.data);
@@ -88,34 +90,37 @@ export const useBook = () => {
       }
     };
 
-    ws.onclose = () => {
-      reconnectIntervalRef.current = Math.min(reconnectIntervalRef.current * 2, 30000);
-      setTimeout(() => connectWebSocket(), reconnectIntervalRef.current);
-    };
-
     ws.onerror = (error) => {
       console.error('WebSocket error:', error);
       ws.close();
     };
 
     wsRef.current = ws;
-  }, [updateOrderBook]);
+  }, [SYMBOL, updateOrderBook]);
 
   useEffect(() => {
-    if (initialBookData) initializeOrderBook(initialBookData);
-  }, [initialBookData]);
+    if (wsRef.current) {
+      wsRef.current.close();
+      wsRef.current = null;
+    }
 
-  useEffect(() => {
     connectWebSocket();
 
     return () => {
       if (wsRef.current) {
         wsRef.current.close();
+        wsRef.current = null;
       }
     };
-  }, [connectWebSocket]);
+  }, [SYMBOL, connectWebSocket]);
+
+  useEffect(() => {
+    if (initialBookData) initializeOrderBook(initialBookData);
+  }, [initialBookData]);
 
   return {
+    symbol: SYMBOL.replace('USDT', ''),
+    isLoading,
     orderBook,
     midPrice,
     midPriceType,

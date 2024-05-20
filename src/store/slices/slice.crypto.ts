@@ -2,9 +2,10 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 const initialState = {
   sort: {
-    type: 'asc',
+    type: 'desc',
     value: 'price',
   },
+  symbol: 'BTCUSDT',
 };
 
 const cryptoSlice = createSlice({
@@ -15,8 +16,11 @@ const cryptoSlice = createSlice({
       const { type, value } = action.payload;
       state.sort = { type, value };
     },
+    updateSymbol(state, action: PayloadAction<string>) {
+      state.symbol = action.payload;
+    },
   },
 });
 
-export const { updateSort } = cryptoSlice.actions;
+export const { updateSort, updateSymbol } = cryptoSlice.actions;
 export default cryptoSlice.reducer;

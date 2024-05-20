@@ -5,7 +5,7 @@ export function ChartComponent() {
 
   if (isLoading)
     return (
-      <div className="flex flex-1 items-center min-h-80 justify-center overflow-hidden border border-zinc-800 rounded-lg">
+      <div className="flex flex-1 items-center min-h-80 justify-center overflow-hidden border border-zinc-800 rounded-lg bg-zinc-900">
         <div className="border-zinc-800 h-10 w-10 animate-spin rounded-full border-8 border-t-teal-500" />
       </div>
     );

@@ -20,7 +20,10 @@ export const binanceApi = createApi({
         params: { symbol, limit },
       }),
     }),
+    getTicker: builder.query({
+      query: (symbols) => `api/v3/ticker/24hr?symbols=${JSON.stringify(symbols)}`,
+    }),
   }),
 });
 
-export const { useGetKlinesQuery, useGetBookQuery } = binanceApi;
+export const { useGetKlinesQuery, useGetBookQuery, useGetTickerQuery } = binanceApi;

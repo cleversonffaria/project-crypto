@@ -1,6 +1,6 @@
 import { IMAGE_CRYPTO, NAME_CRYPTO } from './table.utils';
 
-import { useTableContent } from './table.header.hook';
+import { useTableContent } from './table.hook';
 
 export const TableContent = () => {
   const { sortCryptoData, cryptoSort, handleCrypto } = useTableContent();

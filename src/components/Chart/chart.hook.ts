@@ -4,18 +4,27 @@ import { createChart, CrosshairMode, IChartApi, ISeriesApi, CandlestickData } fr
 import { colors } from './chart.utils';
 import { useGetKlinesQuery } from 'src/service/api.binance';
 import { BASE_URL_SOCKET } from 'src/constants/url';
+import { useAppSelector } from 'src/hooks/useRedux';
+import { timeToTz } from 'src/utils/helpers';
 
 export const useChart = () => {
+  const SYMBOL = useAppSelector((state) => state.crypto.symbol);
+
   const chartContainerRef = useRef<HTMLDivElement>(null);
   const chartRef = useRef<IChartApi | null>(null);
   const candleSeriesRef = useRef<ISeriesApi<'Candlestick'> | null>(null);
   const wsRef = useRef<WebSocket | null>(null);
-  const reconnectIntervalRef = useRef<number>(1000);
 
-  const { data: listDataKlines, isLoading } = useGetKlinesQuery({ symbol: 'BTCUSDT', interval: '1m' });
+  const { data: listDataKlines, isLoading } = useGetKlinesQuery({ symbol: SYMBOL, interval: '1m' });
 
   const handleChart = useCallback(() => {
     if (!chartContainerRef.current) return;
+
+    if (chartRef.current) {
+      chartRef.current.remove();
+      chartRef.current = null;
+      candleSeriesRef.current = null;
+    }
 
     if (!chartRef.current) {
       const chart = createChart(chartContainerRef.current, {
@@ -25,13 +34,19 @@ export const useChart = () => {
         },
         rightPriceScale: {
           borderColor: colors.neutral,
+          scaleMargins: { top: 0.3, bottom: 0.25 },
+          entireTextOnly: true,
         },
         grid: {
           vertLines: { color: colors.neutral },
           horzLines: { color: colors.neutral },
         },
         crosshair: { mode: CrosshairMode.Normal },
-        timeScale: { borderColor: colors.neutral },
+        timeScale: {
+          borderColor: colors.neutral,
+          timeVisible: true,
+          secondsVisible: false,
+        },
       });
 
       const candleSeries = chart.addCandlestickSeries({
@@ -52,7 +67,7 @@ export const useChart = () => {
         const [time, open, high, low, close] = kline;
 
         return {
-          time: +time / 1000,
+          time: timeToTz({ originalTime: String(time), timeZone: 'UTC' }),
           open: parseFloat(String(open)),
           high: parseFloat(String(high)),
           low: parseFloat(String(low)),
@@ -60,8 +75,14 @@ export const useChart = () => {
         };
       }) || [];
 
-    if (candleSeriesRef.current) candleSeriesRef.current.setData(klinesData);
-  }, [listDataKlines]);
+    if (candleSeriesRef.current) {
+      candleSeriesRef.current.setData(klinesData);
+      const latestData = klinesData[klinesData.length - 1];
+      if (latestData) {
+        chartRef.current.timeScale().scrollToPosition(0, true);
+      }
+    }
+  }, [SYMBOL, listDataKlines]);
 
   const handleResize = useCallback(() => {
     if (chartRef.current && chartContainerRef.current) {
@@ -83,16 +104,16 @@ export const useChart = () => {
       resizeObserver.disconnect();
       window.removeEventListener('resize', handleResize);
     };
-  }, [handleChart, handleResize]);
+  }, [SYMBOL, handleChart, handleResize]);
 
   const connectWebSocket = () => {
-    const ws = new WebSocket(`${BASE_URL_SOCKET}/ws/btcusdt@kline_1m`);
+    const ws = new WebSocket(`${BASE_URL_SOCKET}/ws/${SYMBOL.toLowerCase()}@kline_1m`);
 
     ws.onmessage = (event: MessageEvent) => {
       const lastJsonMessage = JSON.parse(event.data);
 
       const klinesData: CandlestickData<any> = {
-        time: lastJsonMessage.k.t / 1000,
+        time: timeToTz({ originalTime: String(lastJsonMessage.k.t), timeZone: 'UTC' }),
         open: parseFloat(String(lastJsonMessage.k.o)),
         high: parseFloat(String(lastJsonMessage.k.h)),
         low: parseFloat(String(lastJsonMessage.k.l)),
@@ -100,11 +121,6 @@ export const useChart = () => {
       };
 
       if (candleSeriesRef.current) candleSeriesRef.current.update(klinesData);
-    };
-
-    ws.onclose = () => {
-      reconnectIntervalRef.current = Math.min(reconnectIntervalRef.current * 2, 30000);
-      setTimeout(() => connectWebSocket(), reconnectIntervalRef.current);
     };
 
     ws.onerror = (error: Event) => {
@@ -116,14 +132,20 @@ export const useChart = () => {
   };
 
   useEffect(() => {
+    if (wsRef.current) {
+      wsRef.current.close();
+      wsRef.current = null;
+    }
+
     connectWebSocket();
 
     return () => {
       if (wsRef.current) {
         wsRef.current.close();
+        wsRef.current = null;
       }
     };
-  }, []);
+  }, [SYMBOL]);
 
   return { isLoading, chartContainerRef };
 };

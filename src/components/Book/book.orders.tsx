@@ -1,26 +1,15 @@
 import Decimal from 'decimal.js-light';
 import { OrderBookProps } from './book.types';
 import { COLOR_ORDER } from './book.utils';
+import { formatPriceQuantity } from 'src/utils/helpers';
 
 export const BookOrders = ({ orders, type }: OrderBookProps) => {
-  {
-    orders.map((order, index) => (
-      <tr key={index} className={type === 'asks' ? 'text-red-500' : 'text-green-500'}>
-        <td className="px-4 py-2">{order.price}</td>
-        <td className="px-4 py-2">{order.quantity}</td>
-      </tr>
-    ));
-  }
-
   return (
     <div className={`mt-2 flex ${type.match('asks') ? 'flex-col-reverse' : 'flex-col'}`}>
       {orders.map((book, index) => {
         const amount = new Decimal(book.price).mul(book.quantity).toNumber();
-        const price = new Decimal(book.price)
-          .toDecimalPlaces(8)
-          .toDecimalPlaces(2, Decimal.ROUND_DOWN)
-          .toNumber()
-          .toFixed(2);
+        const price = formatPriceQuantity(book.price);
+
         const quantity = new Decimal(book.quantity).toDecimalPlaces(5, Decimal.ROUND_DOWN).toFixed(5);
 
         return (

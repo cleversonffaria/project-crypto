@@ -1,16 +1,36 @@
 import { useEffect, useState, useRef } from 'react';
-import { ListCrypto } from './table.types';
-
-import { useAppSelector } from 'src/hooks/useRedux';
+import { useAppDispatch, useAppSelector } from 'src/hooks/useRedux';
 import { BASE_URL_SOCKET } from 'src/constants/url';
-import { formatPrice } from 'src/utils/helpers';
+import { debounce, formatPrice } from 'src/utils/helpers';
+import { useGetTickerQuery } from 'src/service/api.binance';
+import { ListCrypto } from './table.types';
+import { updateSymbol } from 'src/store/slices/slice.crypto';
+
+const SYMBOLS = ['BTCUSDT', 'ETHUSDT', 'SOLUSDT', 'DOGEUSDT'];
 
 export const useTableContent = () => {
+  const { data: initialTickerData, error, isLoading } = useGetTickerQuery(SYMBOLS);
   const [cryptoData, setCryptoData] = useState<{ [symbol: string]: ListCrypto }>({});
   const cryptoSort = useAppSelector((state) => state.crypto.sort);
+  const dispatch = useAppDispatch();
 
   const wsRef = useRef<WebSocket | null>(null);
   const reconnectIntervalRef = useRef<number>(1000);
+
+  useEffect(() => {
+    if (initialTickerData) {
+      const initialData = initialTickerData.reduce((acc: { [symbol: string]: ListCrypto }, item: any) => {
+        acc[item.symbol] = {
+          symbol: item.symbol,
+          price: formatPrice(parseFloat(item.lastPrice)),
+          priceChangePercent: parseFloat(item.priceChangePercent).toFixed(2) + '%',
+        };
+        return acc;
+      }, {});
+
+      setCryptoData(initialData);
+    }
+  }, [initialTickerData]);
 
   const sortCryptoDataByPriceChangePercent = Object.values(cryptoData).sort((a, b) => {
     const changeA = parseFloat(a.priceChangePercent.replace('%', ''));
@@ -34,8 +54,12 @@ export const useTableContent = () => {
     name: sortCryptoDataBySymbol,
   };
 
+  const debouncedCrypto = debounce((item) => {
+    dispatch(updateSymbol(item.symbol));
+  }, 200);
+
   const handleCrypto = (item: ListCrypto) => {
-    console.log(item);
+    debouncedCrypto(item);
   };
 
   const connectWebSocket = () => {
@@ -71,14 +95,16 @@ export const useTableContent = () => {
   };
 
   useEffect(() => {
-    connectWebSocket();
+    if (!isLoading && !error && initialTickerData) {
+      connectWebSocket();
+    }
 
     return () => {
       if (wsRef.current) {
         wsRef.current.close();
       }
     };
-  }, []);
+  }, [initialTickerData, isLoading, error]);
 
   return { sortCryptoData, cryptoSort, handleCrypto };
 };
